@@ -3,13 +3,23 @@
   "description": "",
   "version": "1.0",
   "manifest_version": 3,
-  "permissions": ["tabs"],
+  "permissions": [
+    "tabs",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "commands": {
     "switch_to_lang_routes": {
       "description": "focus lang routes tab"
     }
   },
-  "background": {
-    "service_worker": "background.js"
-  }
+  "web_accessible_resources": [{
+    "resources": ["lang-routes-focus.js"],
+    "matches": ["<all_urls>"]
+  }],
+  "host_permissions": [
+    "<all_urls>"
+  ]
 }
