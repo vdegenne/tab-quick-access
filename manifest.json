@@ -7,12 +7,19 @@
     "tabs",
     "scripting"
   ],
+  "content_scripts": [{
+    "matches": ["https://translate.google.com/*"],
+    "js": ["google-translate.js"]
+  }],
   "background": {
     "service_worker": "background.js"
   },
   "commands": {
     "switch_to_lang_routes": {
       "description": "focus lang routes tab"
+    },
+    "switch_to_google_translate": {
+      "description": "focus google translate tab"
     }
   },
   "web_accessible_resources": [{
