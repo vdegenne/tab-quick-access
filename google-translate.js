@@ -6,7 +6,8 @@ window.addEventListener('keydown', function (e) {
   if (e.altKey && (e.key === 's' || e.key === 'S')) {
     voiceButton.click()
   }
-  if (e.altKey && (e.key === 'd' || e.key === 'd')) {
+  if (e.altKey && (e.key === 'd' || e.key === 'D')) {
+    e.preventDefault()
     listenButton.click()
   }
 })
