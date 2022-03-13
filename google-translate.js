@@ -5,6 +5,7 @@ const listenButton = listenButtons[listenButtons.length - 1]
 window.addEventListener('keydown', function (e) {
   // D for Dictate
   if (e.altKey && (e.key === 'd' || e.key === 'D')) {
+    e.preventDefault()
     voiceButton.click()
   }
   // S for Speak text
