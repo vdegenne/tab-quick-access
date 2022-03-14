@@ -8,9 +8,15 @@ window.addEventListener('keydown', function (e) {
     e.preventDefault()
     voiceButton.click()
   }
+
   // S for Speak text
-  if (e.altKey && (e.key === 's' || e.key === 'S')) {
+  if ((e.key === 's' || e.key === 'S')) {
+    if (e.target.nodeName === 'TEXTAREA') {
+      return
+    }
     e.preventDefault()
     listenButton.click()
   }
+
+  return false
 })

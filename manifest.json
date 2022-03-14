@@ -35,6 +35,9 @@
     },
     "switch_to_google_translate": {
       "description": "focus google translate tab"
+    },
+    "open_google_translate": {
+      "description": "open a new google translate tab from selection"
     }
   }
 }
