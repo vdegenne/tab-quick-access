@@ -80,8 +80,7 @@ async function switchToGoogleTranslate() {
       if (!selection) {
         const voiceButtons = document.querySelectorAll('[aria-label="Translate by voice"]')
         const voiceButton = voiceButtons[voiceButtons.length - 1]
-        console.log(voiceButton)
-        voiceButton.click()
+        // voiceButton.click()
         return;
       }
       // Get the current url
