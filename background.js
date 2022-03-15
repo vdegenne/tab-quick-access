@@ -19,6 +19,11 @@ chrome.commands.onCommand.addListener(async command => {
     case 'open_google_translate':
       await openGoogleTranslate()
       break;
+
+
+    case 'focus_first_lens':
+      focusFirstLens()
+      break;
   }
 })
 
@@ -163,4 +168,16 @@ async function openGoogleTranslate() {
       a.click()
     }
   })
+}
+
+
+async function focusFirstLens () {
+  const tabs = await chrome.tabs.query({});
+  const tab = tabs.find(t => t.title.includes('Google Lens'))
+  chrome.windows.update(tab.windowId, { focused: true })
+  // @TODO: If no instance was found, create a new Google Translate Tab
+  if (!tab) {
+    return
+  }
+  await chrome.tabs.update(tab.id, { active: true })
 }

@@ -31,13 +31,16 @@
   ],
   "commands": {
     "switch_to_lang_routes": {
-      "description": "focus lang routes tab"
+      "description": "Focus lang routes tab"
     },
     "switch_to_google_translate": {
-      "description": "focus google translate tab"
+      "description": "Focus google translate tab"
     },
     "open_google_translate": {
-      "description": "open a new google translate tab from selection"
+      "description": "Open a new google translate tab from selection"
+    },
+    "focus_first_lens": {
+      "description": "Focus the first Google Lens tab found"
     }
   }
 }
