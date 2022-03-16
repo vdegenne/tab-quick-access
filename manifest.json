@@ -33,9 +33,6 @@
     "switch_to_lang_routes": {
       "description": "Focus lang routes tab"
     },
-    "switch_to_google_translate": {
-      "description": "Focus google translate tab"
-    },
     "open_google_translate": {
       "description": "Open a new google translate tab from selection"
     },

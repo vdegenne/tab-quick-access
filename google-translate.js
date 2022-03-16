@@ -4,18 +4,26 @@ const listenButtons = document.querySelectorAll('[aria-label="Listen to source t
 const listenButton = listenButtons[listenButtons.length - 1]
 window.addEventListener('keydown', function (e) {
   // D for Dictate
-  if (e.altKey && (e.key === 'd' || e.key === 'D')) {
+  if (e.altKey === false && (e.key === 'd' || e.key === 'D')) {
+    if (e.target.nodeName === 'TEXTAREA') {
+      return
+    }
     e.preventDefault()
     voiceButton.click()
   }
 
   // S for Speak text
-  if ((e.key === 's' || e.key === 'S')) {
+  if (e.altKey === false && (e.key === 's' || e.key === 'S')) {
     if (e.target.nodeName === 'TEXTAREA') {
       return
     }
     e.preventDefault()
     listenButton.click()
+  }
+
+  if (e.altKey === true && (e.key === 'l' || e.key === 'L')) {
+    const ta = document.querySelectorAll('textarea')[0]
+    ta.focus()
   }
 
   return false

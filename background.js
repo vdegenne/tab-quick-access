@@ -10,14 +10,14 @@ chrome.commands.onCommand.addListener(async command => {
 
 
     // GOOGLE TRANSLATE SWITCH
-    case 'switch_to_google_translate':
-      await switchToGoogleTranslate()
-      break;
+    // case 'switch_to_google_translate':
+    //   await switchToGoogleTranslate()
+    //   break;
 
 
     // GOOGLE TRANSLATE OPEN
     case 'open_google_translate':
-      await openGoogleTranslate()
+      await switchToGoogleTranslate()
       break;
 
 
@@ -79,14 +79,27 @@ async function switchToGoogleTranslate() {
   //   return;
   //   // const result = await chrome.scripting
   // }
-  const tab = tabs.find(t => t.title.includes('Google Translate'))
-  chrome.windows.update(tab.windowId, { focused: true })
-  // @TODO: If no instance was found, create a new Google Translate Tab
-  await chrome.tabs.update(tab.id, { active: true })
+  let tab = tabs.find(t => t.title.includes('Google Translate')) // Translate tab
+  let newTab = false
+  // If no instance was found, create a new Google Translate Tab
+  if (tab) {
+    // We focus the window first
+    chrome.windows.update(tab.windowId, { focused: true })
+    await chrome.tabs.update(tab.id, { active: true })
+  }
+  else { // we create a new tab
+    let url = `https://translate.google.com/`
+    if (selection) {
+      url += `?text=${encodeURIComponent(selection)}`
+    }
+    tab = await chrome.tabs.create({ url })
+    newTab = true;
+  }
+
   await chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    args: [selection],
-    func: (selection) => {
+    args: [selection, newTab],
+    func: (selection, newTab) => {
       // If no selection wait for voice
       if (!selection) {
         const voiceButtons = document.querySelectorAll('[aria-label="Translate by voice"]')
@@ -94,18 +107,23 @@ async function switchToGoogleTranslate() {
         // voiceButton.click()
         return;
       }
-      // Get the current url
-      const params = new URLSearchParams(window.location.search)
-      // Change the query part
-      params.set('text', selection)
-      // Rebuild the url
-      const newUrl = `${window.location.origin}/?${params.toString()}`
-      // Create the anchor
-      const a = document.createElement('a')
-      a.href = newUrl
-      // By clicking the link we make sure to trigger Google Translate pushstate system,
-      // Thus not reloading the page everytime we make a new search
-      a.click()
+
+      // If the query was requested with the URL we pass the url change process
+      console.log(newTab)
+      if (newTab === false) {
+        // Get the current url
+        const params = new URLSearchParams(window.location.search)
+        // Change the query part
+        params.set('text', selection)
+        // Rebuild the url
+        const newUrl = `${window.location.origin}/?${params.toString()}`
+        // Create the anchor
+        const a = document.createElement('a')
+        a.href = newUrl
+        // By clicking the link we make sure to trigger Google Translate pushstate system,
+        // Thus not reloading the page everytime we make a new search
+        a.click()
+      }
     }
   })
 }
