@@ -4,11 +4,11 @@ const listenButtons = document.querySelectorAll('[aria-label="Listen to source t
 const listenButton = listenButtons[listenButtons.length - 1]
 window.addEventListener('keydown', function (e) {
   // D for Dictate
-  if (e.altKey === false && (e.key === 'd' || e.key === 'D')) {
-    if (e.target.nodeName === 'TEXTAREA') {
-      return
-    }
+  if (e.altKey === true && (e.key === 'd' || e.key === 'D')) {
     e.preventDefault()
+    // if (e.target.nodeName === 'TEXTAREA') {
+    //   return
+    // }
     voiceButton.click()
   }
 

@@ -36,6 +36,9 @@
     "open_google_translate": {
       "description": "Open a new google translate tab from selection"
     },
+    "open_google_images": {
+      "description": "Open a new google images tab from selection"
+    },
     "focus_first_lens": {
       "description": "Focus the first Google Lens tab found"
     }

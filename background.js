@@ -20,6 +20,10 @@ chrome.commands.onCommand.addListener(async command => {
       await switchToGoogleTranslate()
       break;
 
+    case 'open_google_images':
+      await openGoogleImages()
+      break;
+
 
     case 'focus_first_lens':
       focusFirstLens()
@@ -125,6 +129,30 @@ async function switchToGoogleTranslate() {
         a.click()
       }
     }
+  })
+}
+
+async function openGoogleImages () {
+  const tabs = await chrome.tabs.query({});
+  // Find the selected text into the current page
+  // console.log(document.getSelection().toString())
+  // const tabId = (await chrome.tabs.query({ active: true }))[0].id
+
+  // Selection on the current visible window tab?
+  const returned = await chrome.scripting.executeScript(
+    {
+      func: () => document.getSelection().toString(),
+      target: { tabId: (await chrome.tabs.query({ currentWindow: true, active: true }))[0].id }
+    }
+  )
+  const selection = returned[0].result
+
+  if (!selection) {
+    return;
+  }
+
+  const tab = await chrome.tabs.create({
+    url: `http://www.google.com/search?q=${encodeURIComponent(selection)}&tbm=isch`
   })
 }
 
