@@ -39,6 +39,9 @@
     "open_google_images": {
       "description": "Open a new google images tab from selection"
     },
+    "open_naver": {
+      "description": "Open a new naver tab from selection"
+    },
     "focus_first_lens": {
       "description": "Focus the first Google Lens tab found"
     }
