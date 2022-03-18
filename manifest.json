@@ -31,16 +31,19 @@
   ],
   "commands": {
     "switch_to_lang_routes": {
-      "description": "Focus lang routes tab"
+      "description": "Focus Lang Routes tab"
     },
     "open_google_translate": {
-      "description": "Open a new google translate tab from selection"
+      "description": "Open a new Google Translate tab from selection"
     },
     "open_google_images": {
-      "description": "Open a new google images tab from selection"
+      "description": "Open a new Google Images tab from selection"
     },
     "open_naver": {
-      "description": "Open a new naver tab from selection"
+      "description": "Open a new Naver tab from selection"
+    },
+    "open_jisho": {
+      "description": "Open a new Jisho tab from selection"
     },
     "focus_first_lens": {
       "description": "Focus the first Google Lens tab found"
