@@ -1,11 +1,9 @@
-const voiceButtons = document.querySelectorAll('[aria-label="Translate by voice"]')
-const voiceButton = voiceButtons[voiceButtons.length - 1]
-const listenButtons = document.querySelectorAll('[aria-label="Listen to source text"]')
-const listenButton = listenButtons[listenButtons.length - 1]
 window.addEventListener('keydown', function (e) {
   // D for Dictate
   if (e.altKey === true && (e.key === 'd' || e.key === 'D')) {
     e.preventDefault()
+    const voiceButtons = document.querySelectorAll('[aria-label="Translate by voice"],[aria-label="音声入力による翻訳"]')
+    const voiceButton = voiceButtons[voiceButtons.length - 1]
     // if (e.target.nodeName === 'TEXTAREA') {
     //   return
     // }
@@ -18,6 +16,8 @@ window.addEventListener('keydown', function (e) {
       return
     }
     e.preventDefault()
+    const listenButtons = document.querySelectorAll('[aria-label="Listen to source text"],[aria-label="原文を聞く"]')
+    const listenButton = listenButtons[listenButtons.length - 1]
     listenButton.click()
   }
 
