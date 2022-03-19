@@ -45,6 +45,9 @@
     "open_jisho": {
       "description": "Open a new Jisho tab from selection"
     },
+    "open_mdbg": {
+      "description": "Open a new MDBG tab from selection"
+    },
     "focus_first_lens": {
       "description": "Focus the first Google Lens tab found"
     }

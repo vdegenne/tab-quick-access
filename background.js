@@ -32,6 +32,10 @@ chrome.commands.onCommand.addListener(async command => {
       await openJisho()
       break;
 
+    case 'open_mdbg':
+      await openMDBG()
+      break;
+
     case 'focus_first_lens':
       focusFirstLens()
       break;
@@ -268,6 +272,30 @@ async function openJisho () {
 
   const tab = await chrome.tabs.create({
     url: `https://jisho.org/search/${encodeURIComponent(selection)}`
+  })
+}
+
+async function openMDBG () {
+  const tabs = await chrome.tabs.query({});
+  // Find the selected text into the current page
+  // console.log(document.getSelection().toString())
+  // const tabId = (await chrome.tabs.query({ active: true }))[0].id
+
+  // Selection on the current visible window tab?
+  const returned = await chrome.scripting.executeScript(
+    {
+      func: () => document.getSelection().toString(),
+      target: { tabId: (await chrome.tabs.query({ currentWindow: true, active: true }))[0].id }
+    }
+  )
+  const selection = returned[0].result
+
+  if (!selection) {
+    return;
+  }
+
+  const tab = await chrome.tabs.create({
+    url: `https://www.mdbg.net/chinese/dictionary?page=worddict&wdrst=0&wdqb=${encodeURIComponent(selection)}`
   })
 }
 

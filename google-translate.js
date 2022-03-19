@@ -1,9 +1,9 @@
+const voiceButtons = document.querySelectorAll('[aria-label="Translate by voice"],[aria-label="音声入力による翻訳"]')
 window.addEventListener('keydown', function (e) {
   // D for Dictate
   if (e.altKey === true && (e.key === 'd' || e.key === 'D')) {
     e.preventDefault()
-    const voiceButtons = document.querySelectorAll('[aria-label="Translate by voice"],[aria-label="音声入力による翻訳"]')
-    const voiceButton = voiceButtons[voiceButtons.length - 1]
+    const voiceButton = voiceButtons[voiceButtons.length - 1].lastElementChild
     // if (e.target.nodeName === 'TEXTAREA') {
     //   return
     // }
