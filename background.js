@@ -265,14 +265,16 @@ async function openJisho () {
     }
   )
   const selection = returned[0].result
+  let url
 
-  if (!selection) {
-    return;
+  if (selection) {
+    url = `https://jisho.org/search/${encodeURIComponent(selection)}`
+  }
+  else {
+    url = 'https://jisho.org/'
   }
 
-  const tab = await chrome.tabs.create({
-    url: `https://jisho.org/search/${encodeURIComponent(selection)}`
-  })
+  const tab = await chrome.tabs.create({ url })
 }
 
 async function openMDBG () {
