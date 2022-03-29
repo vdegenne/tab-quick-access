@@ -44,21 +44,31 @@ chrome.commands.onCommand.addListener(async command => {
 
 async function switchToLangRoutes () {
   const tabs = await chrome.tabs.query({})
+  const currentTab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0]
+
   // Selection on the current visible window tab?
-  returned = await chrome.scripting.executeScript(
+  const selection = (await chrome.scripting.executeScript(
     {
       func: () => document.getSelection().toString(),
-      target: { tabId: (await chrome.tabs.query({ currentWindow: true, active: true }))[0].id }
+      target: { tabId: currentTab.id }
     }
-  )
-  const selection = returned[0].result
+  ))[0].result
 
-  const tab = tabs.find(t => t.title.includes('Lang routes'))
-  chrome.windows.update(tab.windowId, { focused: true })
-  // @TODO: If no instance was found, create a new Google Translate Tab
-  await chrome.tabs.update(tab.id, { active: true })
+  let routesTab = tabs.find(t => t.title.includes('Lang routes'))
+
+  if (!routesTab) {
+    routesTab = await chrome.tabs.create({
+      url: 'https://langroutes.vdegenne.com/',
+      index: currentTab.index + 1
+    })
+  }
+  else {
+    chrome.windows.update(routesTab.windowId, { focused: true })
+    await chrome.tabs.update(routesTab.id, { active: true })
+  }
+
   chrome.scripting.executeScript({
-    target: { tabId: tab.id },
+    target: { tabId: routesTab.id },
     args: [selection],
     world: 'MAIN',
     func: async function (selection) {
@@ -79,14 +89,15 @@ async function switchToGoogleTranslate() {
   // console.log(document.getSelection().toString())
   // const tabId = (await chrome.tabs.query({ active: true }))[0].id
 
+  const currentTab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0]
+
   // Selection on the current visible window tab?
-  const returned = await chrome.scripting.executeScript(
+  const selection = (await chrome.scripting.executeScript(
     {
       func: () => document.getSelection().toString(),
-      target: { tabId: (await chrome.tabs.query({ currentWindow: true, active: true }))[0].id }
+      target: { tabId: currentTab.id }
     }
-  )
-  const selection = returned[0].result
+  ))[0].result
 
   // If there is no selection and the page is Google Lens we verify either a word is selected or not
   // if (selection === '' && tabs.find(t => t.active).title === 'Google Lens') {
@@ -94,25 +105,26 @@ async function switchToGoogleTranslate() {
   //   return;
   //   // const result = await chrome.scripting
   // }
-  let tab = tabs.find(t => t.title.includes('Google Translate')) // Translate tab
+  let translateTab = tabs.find(t => t.title.includes('Google Translate')) // Translate tab
   let newTab = false
-  // If no instance was found, create a new Google Translate Tab
-  if (tab) {
+  // @TODO if no selection was made we focus the first found translate tab if there is one
+  // or if there is selection we open a new tab
+  if (translateTab && !selection) {
     // We focus the window first
-    chrome.windows.update(tab.windowId, { focused: true })
-    await chrome.tabs.update(tab.id, { active: true })
+    chrome.windows.update(translateTab.windowId, { focused: true })
+    await chrome.tabs.update(translateTab.id, { active: true })
   }
   else { // we create a new tab
     let url = `https://translate.google.com/`
     if (selection) {
       url += `?text=${encodeURIComponent(selection)}`
     }
-    tab = await chrome.tabs.create({ url })
+    translateTab = await chrome.tabs.create({ url, index: currentTab.index + 1 })
     newTab = true;
   }
 
   await chrome.scripting.executeScript({
-    target: { tabId: tab.id },
+    target: { tabId: translateTab.id },
     args: [selection, newTab],
     func: (selection, newTab) => {
       // If no selection wait for voice
@@ -124,8 +136,8 @@ async function switchToGoogleTranslate() {
       }
 
       // If the query was requested with the URL we pass the url change process
-      console.log(newTab)
-      if (newTab === false) {
+      // console.log(newTab)
+      if (!newTab && selection) {
         // Get the current url
         const params = new URLSearchParams(window.location.search)
         // Change the query part
@@ -145,24 +157,23 @@ async function switchToGoogleTranslate() {
 
 async function openGoogleTranslate() {
   const tabs = await chrome.tabs.query({});
-  // Find the selected text into the current page
-  // console.log(document.getSelection().toString())
-  // const tabId = (await chrome.tabs.query({ active: true }))[0].id
+  const currentTab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
 
   // Selection on the current visible window tab?
-  const returned = await chrome.scripting.executeScript(
+  const selection = (await chrome.scripting.executeScript(
     {
       func: () => document.getSelection().toString(),
-      target: { tabId: (await chrome.tabs.query({ currentWindow: true, active: true }))[0].id }
+      target: { tabId: currentTab.id }
     }
-  )
-  const selection = returned[0].result
+  ))[0].result
+
   if (!selection) {
     return
   }
 
   chrome.tabs.create({
-    url: `https://translate.google.com/?text=${encodeURIComponent(selection)}`
+    url: `https://translate.google.com/?text=${encodeURIComponent(selection)}`,
+    index: currentTab.index + 1
   })
   return
 
@@ -205,68 +216,62 @@ async function openGoogleTranslate() {
 
 async function openGoogleImages () {
   const tabs = await chrome.tabs.query({});
-  // Find the selected text into the current page
-  // console.log(document.getSelection().toString())
-  // const tabId = (await chrome.tabs.query({ active: true }))[0].id
+  const currentTab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
 
   // Selection on the current visible window tab?
-  const returned = await chrome.scripting.executeScript(
+  const selection = (await chrome.scripting.executeScript(
     {
       func: () => document.getSelection().toString(),
-      target: { tabId: (await chrome.tabs.query({ currentWindow: true, active: true }))[0].id }
+      target: { tabId: currentTab.id }
     }
-  )
-  const selection = returned[0].result
+  ))[0].result
 
   if (!selection) {
     return;
   }
 
   const tab = await chrome.tabs.create({
-    url: `http://www.google.com/search?q=${encodeURIComponent(selection)}&tbm=isch`
+    url: `http://www.google.com/search?q=${encodeURIComponent(selection)}&tbm=isch`,
+    index: currentTab.index + 1
   })
 }
 
 async function openNaver () {
   const tabs = await chrome.tabs.query({});
-  // Find the selected text into the current page
-  // console.log(document.getSelection().toString())
-  // const tabId = (await chrome.tabs.query({ active: true }))[0].id
+  const currentTab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
 
   // Selection on the current visible window tab?
-  const returned = await chrome.scripting.executeScript(
+  const selection = (await chrome.scripting.executeScript(
     {
       func: () => document.getSelection().toString(),
-      target: { tabId: (await chrome.tabs.query({ currentWindow: true, active: true }))[0].id }
+      target: { tabId: currentTab.id }
     }
-  )
-  const selection = returned[0].result
+  ))[0].result
 
-  if (!selection) {
-    return;
+  let url;
+  if (selection) {
+    url = `https://dict.naver.com/search.nhn?query=${encodeURIComponent(selection)}`
+  }
+  else {
+    url = 'https://dict.naver.com/'
   }
 
-  const tab = await chrome.tabs.create({
-    url: `https://dict.naver.com/search.nhn?query=${encodeURIComponent(selection)}`
-  })
+  const tab = await chrome.tabs.create({ url, index: currentTab.index + 1 })
 }
 
 async function openJisho () {
   const tabs = await chrome.tabs.query({});
-  // Find the selected text into the current page
-  // console.log(document.getSelection().toString())
-  // const tabId = (await chrome.tabs.query({ active: true }))[0].id
+  const currentTab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
 
   // Selection on the current visible window tab?
-  const returned = await chrome.scripting.executeScript(
+  const selection = (await chrome.scripting.executeScript(
     {
       func: () => document.getSelection().toString(),
-      target: { tabId: (await chrome.tabs.query({ currentWindow: true, active: true }))[0].id }
+      target: { tabId: currentTab.id }
     }
-  )
-  const selection = returned[0].result
-  let url
+  ))[0].result
 
+  let url
   if (selection) {
     url = `https://jisho.org/search/${encodeURIComponent(selection)}`
   }
@@ -274,35 +279,35 @@ async function openJisho () {
     url = 'https://jisho.org/'
   }
 
-  const tab = await chrome.tabs.create({ url })
+  const tab = await chrome.tabs.create({ url, index: currentTab.index + 1 })
 }
 
 async function openMDBG () {
   const tabs = await chrome.tabs.query({});
-  // Find the selected text into the current page
-  // console.log(document.getSelection().toString())
-  // const tabId = (await chrome.tabs.query({ active: true }))[0].id
+  const currentTab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
 
   // Selection on the current visible window tab?
-  const returned = await chrome.scripting.executeScript(
+  const selection = (await chrome.scripting.executeScript(
     {
       func: () => document.getSelection().toString(),
-      target: { tabId: (await chrome.tabs.query({ currentWindow: true, active: true }))[0].id }
+      target: { tabId: result.id }
     }
-  )
-  const selection = returned[0].result
+  ))[0].result
 
   if (!selection) {
     return;
   }
 
   const tab = await chrome.tabs.create({
-    url: `https://www.mdbg.net/chinese/dictionary?page=worddict&wdrst=0&wdqb=${encodeURIComponent(selection)}`
+    url: `https://www.mdbg.net/chinese/dictionary?page=worddict&wdrst=0&wdqb=${encodeURIComponent(selection)}`,
+    index: currentTab.index + 1
   })
 }
 
 async function focusFirstLens () {
   const tabs = await chrome.tabs.query({});
+  // const currentTab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
+
   const tab = tabs.find(t => t.title.includes('Google Lens'))
   chrome.windows.update(tab.windowId, { focused: true })
   // @TODO: If no instance was found, create a new Google Translate Tab
