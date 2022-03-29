@@ -290,7 +290,7 @@ async function openMDBG () {
   const selection = (await chrome.scripting.executeScript(
     {
       func: () => document.getSelection().toString(),
-      target: { tabId: result.id }
+      target: { tabId: currentTab.id }
     }
   ))[0].result
 
