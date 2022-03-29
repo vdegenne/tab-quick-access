@@ -59,7 +59,7 @@ async function switchToLangRoutes () {
   if (!routesTab) {
     routesTab = await chrome.tabs.create({
       url: 'https://langroutes.vdegenne.com/',
-      index: currentTab.index + 1
+      index: currentTab.index
     })
   }
   else {
@@ -119,7 +119,7 @@ async function switchToGoogleTranslate() {
     if (selection) {
       url += `?text=${encodeURIComponent(selection)}`
     }
-    translateTab = await chrome.tabs.create({ url, index: currentTab.index + 1 })
+    translateTab = await chrome.tabs.create({ url, index: currentTab.index })
     newTab = true;
   }
 
@@ -173,7 +173,7 @@ async function openGoogleTranslate() {
 
   chrome.tabs.create({
     url: `https://translate.google.com/?text=${encodeURIComponent(selection)}`,
-    index: currentTab.index + 1
+    index: currentTab.index
   })
   return
 
@@ -232,7 +232,7 @@ async function openGoogleImages () {
 
   const tab = await chrome.tabs.create({
     url: `http://www.google.com/search?q=${encodeURIComponent(selection)}&tbm=isch`,
-    index: currentTab.index + 1
+    index: currentTab.index
   })
 }
 
@@ -256,7 +256,7 @@ async function openNaver () {
     url = 'https://dict.naver.com/'
   }
 
-  const tab = await chrome.tabs.create({ url, index: currentTab.index + 1 })
+  const tab = await chrome.tabs.create({ url, index: currentTab.index })
 }
 
 async function openJisho () {
@@ -279,7 +279,7 @@ async function openJisho () {
     url = 'https://jisho.org/'
   }
 
-  const tab = await chrome.tabs.create({ url, index: currentTab.index + 1 })
+  const tab = await chrome.tabs.create({ url, index: currentTab.index })
 }
 
 async function openMDBG () {
@@ -300,7 +300,7 @@ async function openMDBG () {
 
   const tab = await chrome.tabs.create({
     url: `https://www.mdbg.net/chinese/dictionary?page=worddict&wdrst=0&wdqb=${encodeURIComponent(selection)}`,
-    index: currentTab.index + 1
+    index: currentTab.index
   })
 }
 
