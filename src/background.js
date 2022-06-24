@@ -30,6 +30,10 @@ chrome.commands.onCommand.addListener(async command => {
       await openNaver()
       break;
 
+    case 'open_goo':
+      await openGoo()
+      break;
+
     case 'open_jisho':
       await openJisho()
       break;
@@ -293,7 +297,7 @@ async function openJisho () {
 }
 
 async function openGoo () {
-  const tabs = await chrome.tabs.query({});
+  // const tabs = await chrome.tabs.query({});
   const currentTab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
 
   // Selection on the current visible window tab?
