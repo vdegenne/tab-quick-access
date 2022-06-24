@@ -42,6 +42,9 @@
     "open_naver": {
       "description": "Open a new Naver tab from selection"
     },
+    "open_goo": {
+      "description": "Open a new Goo tab from selection"
+    },
     "open_jisho": {
       "description": "Open a new Jisho tab from selection"
     },

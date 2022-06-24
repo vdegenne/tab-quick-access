@@ -292,6 +292,30 @@ async function openJisho () {
   const tab = await chrome.tabs.create({ url, index: currentTab.index })
 }
 
+async function openGoo () {
+  const tabs = await chrome.tabs.query({});
+  const currentTab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
+
+  // Selection on the current visible window tab?
+  const selection = (await chrome.scripting.executeScript(
+    {
+      func: () => document.getSelection().toString(),
+      target: { tabId: currentTab.id }
+    }
+  ))[0].result
+
+  let url
+  if (selection) {
+    url = `https://dictionary.goo.ne.jp/word/${encodeURIComponent(selection)}/`
+    const tab = await chrome.tabs.create({ url })
+  }
+  // else {
+  //   url = 'https://jisho.org/'
+  // }
+
+  // const tab = await chrome.tabs.create({ url, index: currentTab.index })
+}
+
 async function openMDBG () {
   const tabs = await chrome.tabs.query({});
   const currentTab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
